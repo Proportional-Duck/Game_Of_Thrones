@@ -1,0 +1,268 @@
+@import url('https://fonts.googleapis.com/css2?family=Cinzel+Decorative:wght@400;700;900&family=Crimson+Pro:ital,wght@0,300;0,400;0,600;1,400&display=swap');
+
+:root {
+  /* Colors */
+  --bg-dark: #050508;
+  --bg-deep: #0a0a0f;
+  --bg-surface: #101016;
+  --bg-surface-hover: #161622;
+  
+  --gold: #d4af37;
+  --gold-glow: rgba(212, 175, 55, 0.4);
+  --gold-dim: #aa8c2c;
+  
+  --red: #a31d1d;
+  --red-glow: rgba(163, 29, 29, 0.4);
+  
+  --blue: #3d85c6;
+  --blue-glow: rgba(61, 133, 198, 0.4);
+  
+  --orange: #e67e22;
+  --orange-glow: rgba(230, 126, 34, 0.4);
+  
+  --text-primary: #f5f0e6; /* Parchment white */
+  --text-secondary: #b2ac9f;
+  --text-dim: #736d62;
+  
+  --border-gold: rgba(212, 175, 55, 0.2);
+  --border-dim: rgba(255, 255, 255, 0.07);
+  
+  /* Fonts */
+  --font-title: 'Cinzel Decorative', Georgia, serif;
+  --font-body: 'Crimson Pro', serif;
+  
+  /* Transitions */
+  --transition-smooth: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+  --transition-fast: all 0.2s ease;
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  scrollbar-width: thin;
+  scrollbar-color: var(--gold-dim) var(--bg-dark);
+}
+
+/* Scrollbar Customization */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+::-webkit-scrollbar-track {
+  background: var(--bg-dark);
+}
+::-webkit-scrollbar-thumb {
+  background: var(--gold-dim);
+  border-radius: 4px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: var(--gold);
+}
+
+body {
+  background-color: var(--bg-dark);
+  color: var(--text-primary);
+  font-family: var(--font-body);
+  font-size: 1.15rem;
+  line-height: 1.6;
+  overflow-x: hidden;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+#root {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  background-image: 
+    radial-gradient(circle at 50% 0%, rgba(212, 175, 55, 0.08) 0%, transparent 60%),
+    radial-gradient(circle at 100% 100%, rgba(163, 29, 29, 0.05) 0%, transparent 50%);
+  background-attachment: fixed;
+}
+
+/* Common Typography & Headings */
+h1, h2, h3, h4, h5, h6 {
+  font-family: var(--font-title);
+  font-weight: 700;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: var(--text-primary);
+}
+
+h1 {
+  font-size: 3rem;
+  line-height: 1.2;
+  text-shadow: 0 0 15px var(--gold-glow);
+}
+
+h2 {
+  font-size: 2.2rem;
+  text-align: center;
+  position: relative;
+  margin-bottom: 2.5rem;
+  color: var(--gold);
+  text-shadow: 0 0 10px rgba(0, 0, 0, 0.8);
+}
+
+h2::after {
+  content: '';
+  position: absolute;
+  bottom: -10px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 120px;
+  height: 2px;
+  background: linear-gradient(90deg, transparent, var(--gold), transparent);
+}
+
+p {
+  color: var(--text-secondary);
+  font-weight: 300;
+}
+
+/* Layout Utilities */
+.container {
+  width: 100%;
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 0 2rem;
+}
+
+.section {
+  padding: 5rem 0;
+  position: relative;
+}
+
+/* Flex & Grids */
+.flex-center {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Premium Glass Cards */
+.glass-card {
+  background: rgba(16, 16, 22, 0.65);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid var(--border-gold);
+  border-radius: 8px;
+  padding: 2rem;
+  box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.6);
+  transition: var(--transition-smooth);
+}
+
+.glass-card:hover {
+  border-color: var(--gold);
+  box-shadow: 0 12px 40px 0 rgba(212, 175, 55, 0.15), 0 0 20px 0 rgba(0, 0, 0, 0.7);
+  transform: translateY(-5px);
+}
+
+/* Interactive Buttons */
+.btn-gold {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  background: transparent;
+  color: var(--gold);
+  border: 1px solid var(--gold);
+  padding: 0.8rem 1.8rem;
+  font-family: var(--font-title);
+  font-size: 0.9rem;
+  font-weight: 700;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  cursor: pointer;
+  border-radius: 4px;
+  transition: var(--transition-smooth);
+  position: relative;
+  overflow: hidden;
+  z-index: 1;
+}
+
+.btn-gold::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(212, 175, 55, 0.2), transparent);
+  transition: 0.5s;
+  z-index: -1;
+}
+
+.btn-gold:hover::before {
+  left: 100%;
+}
+
+.btn-gold:hover {
+  color: var(--bg-dark);
+  background: var(--gold);
+  box-shadow: 0 0 15px var(--gold-glow);
+  transform: scale(1.03);
+}
+
+.btn-gold:active {
+  transform: scale(0.98);
+}
+
+/* Navigation Links */
+.nav-link {
+  font-family: var(--font-title);
+  color: var(--text-secondary);
+  text-decoration: none;
+  font-size: 0.85rem;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  transition: var(--transition-fast);
+  cursor: pointer;
+}
+
+.nav-link:hover, .nav-link.active {
+  color: var(--gold);
+  text-shadow: 0 0 8px var(--gold-glow);
+}
+
+/* Custom Text Accents */
+.gold-text {
+  color: var(--gold);
+}
+
+.red-text {
+  color: var(--red);
+}
+
+.blue-text {
+  color: var(--blue);
+}
+
+.orange-text {
+  color: var(--orange);
+}
+
+/* Particle canvas */
+.particle-canvas {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: -1;
+  pointer-events: none;
+}
+
+/* Responsive fixes */
+@media (max-width: 768px) {
+  h1 {
+    font-size: 2rem;
+  }
+  h2 {
+    font-size: 1.6rem;
+  }
+  body {
+    font-size: 1.05rem;
+  }
+}
