@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 
 const HOUSES_DATA = [
   {
@@ -76,8 +76,6 @@ const HOUSES_DATA = [
 ];
 
 export default function Houses() {
-  const [activeHouse, setActiveHouse] = useState(null);
-
   return (
     <div className="houses-page container section">
       <h2>The Great Houses of Westeros</h2>
@@ -90,8 +88,6 @@ export default function Houses() {
           <div 
             key={house.id} 
             className="house-card-wrapper"
-            onMouseEnter={() => setActiveHouse(house.id)}
-            onMouseLeave={() => setActiveHouse(null)}
           >
             <div className="house-card-inner">
               {/* Front Side */}

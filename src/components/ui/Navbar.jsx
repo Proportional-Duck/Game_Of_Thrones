@@ -13,10 +13,17 @@ export default function Navbar({ activePage, setActivePage }) {
   return (
     <nav className="navbar-container">
       <div className="navbar-brand" onClick={() => setActivePage('hero')}>
-        <svg viewBox="0 0 100 100" className="brand-emblem">
-          {/* Stylized crown/sword emblem */}
-          <path d="M50 15 L55 35 L75 35 L60 48 L65 70 L50 58 L35 70 L40 48 L25 35 L45 35 Z" fill="var(--gold)" />
-          <circle cx="50" cy="50" r="42" stroke="var(--gold)" strokeWidth="2" fill="none" strokeDasharray="4,4" />
+        <svg viewBox="0 0 512 512" className="brand-emblem">
+          <g>
+            <path d="M120 180 C80 140, 40 240, 70 320 C100 290, 140 280, 160 300 C130 260, 120 220, 120 180 Z" fill="#7a1212" opacity="0.6"/>
+            <path d="M280 120 C380 60, 460 220, 420 360 C380 300, 310 320, 270 360 C320 280, 310 180, 280 120 Z" fill="var(--gold)"/>
+            <path d="M160 420 C180 340, 210 240, 180 180 C190 200, 240 220, 260 300 C270 350, 290 400, 320 440 C250 460, 180 450, 160 420 Z" fill="#a31d1d" />
+            <path d="M180 180 C170 140, 190 100, 230 80 C240 75, 255 70, 265 85 C250 90, 240 105, 245 120 C255 110, 275 105, 290 115 C295 120, 280 130, 270 135 C285 140, 305 145, 300 160 C290 165, 275 160, 260 160 C275 175, 265 190, 250 195 C235 200, 200 200, 180 180 Z" fill="var(--gold)" />
+            <path d="M220 85 C210 50, 180 30, 150 25 C175 40, 195 65, 210 82 Z" fill="#ffd700" />
+            <circle cx="225" cy="115" r="8" fill="#ffffff" />
+            <circle cx="225" cy="115" r="14" fill="none" stroke="#ff5500" stroke-width="2" />
+            <path d="M285 145 L340 135 M275 155 L350 165" stroke="#ffd700" stroke-width="6" stroke-linecap="round" />
+          </g>
         </svg>
         <span className="brand-text">Realm Guide</span>
       </div>

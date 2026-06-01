@@ -105,14 +105,14 @@ export default function WesterosGlobe({ onRegionSelect }) {
     container.appendChild(renderer.domElement);
 
     // 2. Lights
-    const ambientLight = new THREE.AmbientLight(0xffffff, 0.4);
+    const ambientLight = new THREE.AmbientLight(0xffffff, 0.2); // Dimmer ambient for contrast
     scene.add(ambientLight);
 
-    const pointLight = new THREE.PointLight(0xd4af37, 2, 15);
-    pointLight.position.set(5, 3, 5);
-    scene.add(pointLight);
+    const sunLight = new THREE.DirectionalLight(0xffeedd, 3.5); // Realistic sun light
+    sunLight.position.set(5, 3, 5);
+    scene.add(sunLight);
 
-    const blueRimLight = new THREE.PointLight(0x4a9eca, 2.5, 10);
+    const blueRimLight = new THREE.PointLight(0x4a9eca, 3, 15); // Cooler rim light for space feel
     blueRimLight.position.set(-5, -2, -5);
     scene.add(blueRimLight);
 
@@ -122,38 +122,31 @@ export default function WesterosGlobe({ onRegionSelect }) {
 
     const radius = 2.2;
 
-    // A wireframe glowing sphere for stylized look
-    const sphereGeo = new THREE.SphereGeometry(radius, 32, 32);
-    const sphereMat = new THREE.MeshBasicMaterial({
-      color: 0x12121a,
-      transparent: true,
-      opacity: 0.6,
+    const textureLoader = new THREE.TextureLoader();
+    const mapTexture = textureLoader.load('/westeros_map.png');
+    mapTexture.colorSpace = THREE.SRGBColorSpace;
+
+    // Realistic globe with texture
+    const sphereGeo = new THREE.SphereGeometry(radius, 64, 64);
+    const sphereMat = new THREE.MeshStandardMaterial({
+      map: mapTexture,
+      roughness: 0.6,
+      metalness: 0.1,
     });
     const baseSphere = new THREE.Mesh(sphereGeo, sphereMat);
     globeGroup.add(baseSphere);
 
-    // Add gold gridlines
-    const gridGeo = new THREE.SphereGeometry(radius, 16, 16);
-    const gridMat = new THREE.MeshBasicMaterial({
-      color: 0xd4af37,
-      wireframe: true,
+    // Subtle atmospheric glow
+    const atmosGeo = new THREE.SphereGeometry(radius + 0.1, 64, 64);
+    const atmosMat = new THREE.MeshBasicMaterial({
+      color: 0x55aaff,
       transparent: true,
       opacity: 0.15,
+      side: THREE.BackSide,
+      blending: THREE.AdditiveBlending,
     });
-    const gridSphere = new THREE.Mesh(gridGeo, gridMat);
-    globeGroup.add(gridSphere);
-
-    // Dynamic latitude/longitude rings
-    const ringGeo = new THREE.RingGeometry(radius, radius + 0.05, 64);
-    const ringMat = new THREE.MeshBasicMaterial({
-      color: 0xd4af37,
-      side: THREE.DoubleSide,
-      transparent: true,
-      opacity: 0.25
-    });
-    const ring = new THREE.Mesh(ringGeo, ringMat);
-    ring.rotation.x = Math.PI / 2;
-    globeGroup.add(ring);
+    const atmosphere = new THREE.Mesh(atmosGeo, atmosMat);
+    globeGroup.add(atmosphere);
 
     // 4. Region Pins
     const pinGroup = new THREE.Group();

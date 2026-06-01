@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import Navbar from './components/ui/Navbar';
 import ParticleField from './components/3d/ParticleField';
+import IntroSequence from './components/ui/IntroSequence';
 import Hero from './pages/Hero';
 import Map from './pages/Map';
 import Houses from './pages/Houses';
@@ -10,6 +11,7 @@ import Lore from './pages/Lore';
 
 function App() {
   const [activePage, setActivePage] = useState('hero');
+  const [showIntro, setShowIntro] = useState(true);
 
   // Render the selected page dynamically
   const renderPage = () => {
@@ -33,6 +35,11 @@ function App() {
 
   return (
     <>
+      {/* Cinematic Dragon Fire intro overlay */}
+      {showIntro && (
+        <IntroSequence onComplete={() => setShowIntro(false)} />
+      )}
+
       {/* 3D background particle system (rising fire and falling ice snow) */}
       <ParticleField />
 

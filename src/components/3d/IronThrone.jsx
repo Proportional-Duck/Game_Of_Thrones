@@ -3,8 +3,7 @@ import * as THREE from 'three';
 
 export default function IronThrone() {
   const containerRef = useRef(null);
-  const [loading, setLoading] = useState(true);
-  const [assemblyProgress, setAssemblyProgress] = useState(0);
+
   const triggerAssemblyRef = useRef(null);
 
   // Expose a reset/re-assemble trigger
@@ -326,7 +325,7 @@ export default function IronThrone() {
         item.mesh.rotation.copy(item.startRotation);
       });
 
-      setLoading(false);
+
     };
 
     // Attach function to ref so UI triggers can call it
@@ -348,6 +347,26 @@ export default function IronThrone() {
     };
 
     window.addEventListener('mousemove', handleMouseMove);
+
+    const raycaster = new THREE.Raycaster();
+    const mouse = new THREE.Vector2();
+
+    const handleClick = (e) => {
+      const rect = container.getBoundingClientRect();
+      mouse.x = ((e.clientX - rect.left) / rect.width) * 2 - 1;
+      mouse.y = -((e.clientY - rect.top) / rect.height) * 2 + 1;
+      
+      raycaster.setFromCamera(mouse, camera);
+      
+      // recursive=true to check all parts of the throne (swords, base, etc)
+      const intersects = raycaster.intersectObjects(throneGroup.children, true);
+      
+      if (intersects.length > 0) {
+        resetAssembly();
+      }
+    };
+
+    container.addEventListener('click', handleClick);
 
     // 8. Animation Engine
     const clock = new THREE.Clock();
@@ -372,7 +391,6 @@ export default function IronThrone() {
       throneGroup.rotation.y = currentRotationY + elapsedTime * 0.045; // Slow constant rotation
 
       // 9. Update each sword's flight progress
-      let activeFlyingCount = 0;
       let totalCompleted = 0;
 
       flyingSwords.forEach((item) => {
@@ -380,7 +398,6 @@ export default function IronThrone() {
           // Hasn't started flying yet, keep at start position
           item.mesh.position.copy(item.startPosition);
           item.mesh.rotation.copy(item.startRotation);
-          activeFlyingCount++;
         } else if (assemblyTime >= item.delay && assemblyTime < item.delay + item.duration) {
           // Actively flying
           const ratio = (assemblyTime - item.delay) / item.duration;
@@ -393,7 +410,6 @@ export default function IronThrone() {
           item.mesh.rotation.x = THREE.MathUtils.lerp(item.startRotation.x, item.targetRotation.x, easeRatio);
           item.mesh.rotation.y = THREE.MathUtils.lerp(item.startRotation.y, item.targetRotation.y, easeRatio);
           item.mesh.rotation.z = THREE.MathUtils.lerp(item.startRotation.z, item.targetRotation.z, easeRatio);
-          activeFlyingCount++;
         } else {
           // Completed flight, locked in place
           item.mesh.position.copy(item.targetPosition);
@@ -402,9 +418,6 @@ export default function IronThrone() {
         }
       });
 
-      // Update state for UI visual feedback bar
-      const progressPercent = Math.min(100, Math.floor((totalCompleted / flyingSwords.length) * 100));
-      setAssemblyProgress(progressPercent);
 
       // Lights Pulsing
       fireLight.intensity = 15 + Math.sin(elapsedTime * 4.5) * 4;
@@ -435,6 +448,7 @@ export default function IronThrone() {
     // Cleanup resources
     return () => {
       window.removeEventListener('mousemove', handleMouseMove);
+      container.removeEventListener('click', handleClick);
       window.removeEventListener('resize', handleResize);
       cancelAnimationFrame(animationFrameId);
 
@@ -463,103 +477,14 @@ export default function IronThrone() {
     >
       <div ref={containerRef} style={{ width: '100%', height: '100%' }} />
 
-      {/* Assembly HUD panel */}
-      <div className="assembly-hud-overlay glass-card">
-        <div className="hud-metric">
-          <span className="hud-label">Throne Synthesis</span>
-          <span className="hud-val">{assemblyProgress}%</span>
-        </div>
-        <div className="hud-progress-track">
-          <div className="hud-progress-fill" style={{ width: `${assemblyProgress}%` }} />
-        </div>
-        
-        {assemblyProgress === 100 ? (
-          <button className="btn-gold reassemble-btn" onClick={triggerReassemble}>
-            ⚡ Re-Forge Throne
-          </button>
-        ) : (
-          <div className="synthesis-hint">⚔️ Staggering sword vectors...</div>
-        )}
-      </div>
+
 
       <style>{`
         .throne-scene-container {
           background: radial-gradient(circle, rgba(16,16,22,0.4) 0%, rgba(5,5,8,0.9) 100%);
         }
 
-        .assembly-hud-overlay {
-          position: absolute;
-          bottom: 20px;
-          left: 20px;
-          right: 20px;
-          background: rgba(5, 5, 8, 0.85) !important;
-          border: 1px solid var(--border-gold) !important;
-          border-radius: 8px;
-          padding: 1rem 1.5rem !important;
-          display: flex;
-          flex-direction: column;
-          gap: 0.6rem;
-          box-shadow: 0 8px 32px rgba(0, 0, 0, 0.7);
-          pointer-events: auto;
-          transition: var(--transition-smooth);
-        }
 
-        .hud-metric {
-          display: flex;
-          justify-content: space-between;
-          font-family: var(--font-title);
-          font-size: 0.75rem;
-          letter-spacing: 1.5px;
-          text-transform: uppercase;
-        }
-
-        .hud-label {
-          color: var(--text-secondary);
-        }
-
-        .hud-val {
-          color: var(--gold);
-          font-weight: 900;
-          text-shadow: 0 0 5px var(--gold-glow);
-        }
-
-        .hud-progress-track {
-          width: 100%;
-          height: 6px;
-          background: rgba(255, 255, 255, 0.05);
-          border-radius: 3px;
-          overflow: hidden;
-          border: 0.5px solid rgba(255,255,255,0.05);
-        }
-
-        .hud-progress-fill {
-          height: 100%;
-          background: linear-gradient(90deg, var(--red), var(--gold));
-          box-shadow: 0 0 8px var(--gold-glow);
-          transition: width 0.1s linear;
-        }
-
-        .reassemble-btn {
-          font-size: 0.65rem;
-          padding: 0.4rem 0.8rem;
-          align-self: center;
-          margin-top: 0.2rem;
-        }
-
-        .synthesis-hint {
-          font-family: var(--font-title);
-          font-size: 0.6rem;
-          color: var(--text-dim);
-          letter-spacing: 1px;
-          text-align: center;
-          text-transform: uppercase;
-          animation: pulseFade 1.5s infinite alternate;
-        }
-
-        @keyframes pulseFade {
-          0% { opacity: 0.4; }
-          100% { opacity: 1; }
-        }
       `}</style>
     </div>
   );
